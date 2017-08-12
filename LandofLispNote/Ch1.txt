@@ -1,4 +1,0 @@
-the vast of majority of the Lisp community uses two Lisps: ANSI  Common Lisp (CL) and Scheme
-
-A key design goal  with CL was to create a multiparadigm language, meaning it includes support for many different styles of programing such as object-oriented programming, functional programming, generic programming and domain-specific language programming.
-
