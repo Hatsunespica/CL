@@ -1,1 +1,38 @@
-Ch2
+ash -- the bit operation in Lisp, (ash 1 1) -> 2 && (ash 2 -1) -> 1
+defun -- use this to define a function (defun return-five () (+ 2 3))
+defparameter -- use this to define a global variable (defparameter *a* 1)
+defvar -- use this also to define a global variable (defvar *a* 1)
+
+but this is a difference{
+	(defparameter *a* 1)
+	(defparameter *a* 2)
+	*a* 
+	REPL shows 2
+
+	but
+
+	(defvar *a* 1)
+	(defvar *a* 2)
+
+	REPL shows 1
+}
+
+setf -- Assignment, (setf a b) -> a=b
+
+when you define a function you can 
+(defun fun1 ()
+ (something)
+ (something)
+ (something)...)
+it means you can write a lot of sentence follow the parameter
+
+let -- use this to create local variables
+ (let (variable declarations) ...body...)
+ (let ((a 2) (b 1)) (+ a b))
+
+flet -- use this to define local function
+(flet ((function_name (arguments) ...function_body...)) ...body...)
+(flet ((f (n) (+ n 1)) (g (n) (- n 3))) (g (f 2)))
+
+labels -- make function names available in defined functions
+(labels ((a (n) (+ n 5)) (b (n) (+ (a n) 6))) (b 10))
