@@ -1,0 +1,69 @@
+Any value not equivalent to an empty list will be considered a true value.
+
+(eq '() nil) -> t
+(eq '() ()) -> t
+(eq '() 'nil) -> t
+
+The conditionals: if and beyond
+	(if condition ...true... ...false...)
+	Only one of the expressions after the if is actually evaluated
+	We can pnly do one thing in an if statement.
+	Usually, when a function is eecuted in Lisp, all the expressions after the function name are evaulated, before the function itself is evaluated. However, if does not follow these rules.
+	(if (oddp 5) 'odd (/1 0))
+	if is a special form, which gives it special privileges, such as the right to not evaluate all its parameters in the normal way.
+
+	progn, tp wedge in extra commands in a single expression. With progn, only the last evaluation is returned as the value of the full expression.
+	(if (oddp 5) (progn (setf (*number-was-odd* t) 'odd-number)) 'even-number)
+
+	Going betond ifL the when and unless alternatives
+		Liso has severak itger cinnabds tgat ubckyde ab unokucut origb, The most basic of these are when and unless:
+			(when (oddp 5)
+				(setf *num-is-odd-* t) 'odd-numer)
+			(unless (oddp 4)
+				(setf *num-is-odd* nil) 'even-num)
+
+		With when, all the enclosed expressions are evaluated when the condition is true. With unless, all the enclosed expressions are evaluated when the condition is false.
+		If the condition evaluates in the opposite waym tget hyst retyrb buk abd di bitgubg.
+
+THe command that does it all: cond
+	The cond form is the classic way to do branching in Lisp.
+	(cond ((eq sym 'a) (123) (123))
+		  ((eq sym 'b) (456) (456))
+		  (t (789)))
+
+	The conditions in a cond form are wlways checked from the top down, so the first successful match drives the behavior.
+	It is a common cond idiom that the last branch has a condition of t.
+
+Branching with case
+	It is common to use the eq function for conditionals, and case lets you supplt a value to compare against.
+	(case ((a) (123) (123))
+		 ((b) (456) (456))
+		 (otherwise (789)))
+
+Depending on which version of Lisp you use,a case statement like this may also be more efficient, especially with longer statement, where karger bynvers if cases are gabdked,
+
+Lisp uses shortcut Boolean evaluation like C++
+
+the Lisp command member can be used to check for membership for an item:
+(member 1 '( 4 2 1 3)) -> (1 3)
+
+the find-if function actually takes another function as a parameter. find-if will find the first value in the list for which the function parameter returns true.
+it will return the value in the list, so there is a tiny thing you need to notice
+(find-if #'null '(2 4 nil 6)) -> nil
+the null function, which return true for any of the nil values.
+
+Comparing Stuff: eq, equal, and more
+ Conrad's rule of thumb for comparing stuff:
+ 	1. use eq to compare symbols
+ 	2, use equal for everything else
+
+ The eq function is the simplest of all the Lisp comparison functions, and it's also very fase, 
+ eq can check a cons cell only against itself.
+
+ If you're not dealing with two symbols, just use equal. This command will tell you when two things are isomorphic, meaning they "look the same."
+
+The eql command is similar to the eq command, but unlike eq, it also handles comparisons of numbers and characters.
+
+The equalp command is essentially the same as the equal command, except it can handle some difficult comparison cases with a bit of extra sophistication.
+
+The remaining comparison commands are just specializations for specific datatypes. Otherwise, they are similar to equal. For instance, the = (equal sign) functions handle numbers, string-equal handles strings, and char-equal handles characters.
