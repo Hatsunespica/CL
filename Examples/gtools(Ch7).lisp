@@ -1,7 +1,8 @@
-`(defun dot-name (exp)
+(defun dot-name (exp)
   (substitute-if #\_ (complement #'alphanumericp) (prin1-to-string exp)))
 
 (defparameter *max-label-length* 30)
+
 (defun dot-label (exp)
   (if exp
       (let ((s (write-to-string exp :pretty nil)))
@@ -67,14 +68,14 @@
 
 (defun ugraph->dot (nodes edges)
   (princ "graph{")
-  (princ nodes->dot nodes)
-  (princ edges->dot edges)
+  (nodes->dot nodes)
+  (uedges->dot edges)
   (princ "}"))
 
 (defun ugraph->png (fname nodes edges)
   (dot->png fname
 	    (lambda ()
-	      (ugraph->dot nods edges))))
+	      (ugraph->dot nodes edges))))
 
 
 
