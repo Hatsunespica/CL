@@ -16,7 +16,7 @@
 	  (fresh-line)
 	  (princ (dot-name (car node)))
 	  (princ "[label=\"")
-	  (princ (dot-label (cdr node)))
+	  (princ (dot-label node))
 	  (princ "\"];"))
 	nodes))
 
