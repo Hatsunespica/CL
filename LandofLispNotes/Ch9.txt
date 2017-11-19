@@ -1,0 +1,148 @@
+This chapter includes arrays, hash tables, structures and generice programming.
+
+Arrays:
+	similiar to C++ array
+	declare by (make-array array-length), initial value is nil
+	  such as:
+	       (defparameter arr (make-array 3))
+	get i-th element by (aref array-name index)
+	  such as:
+	       (aref arr 3)
+
+	setf is a generic setter such as:
+	     (setf foo '(x y z))
+	     (setf (second foo) (make-array 10))
+	     (setf (aref (second foo) 9) (make-hash-table))
+
+Array vs List:
+     The same as Data Structure, array support random visit, list support O(1) insert.
+
+Hash table:
+     declare by (make-hash=table) such as:
+     	 (defparameter x (make-hash-table))
+     get a key by (gethash key hash-table) such as:
+     	 (gethash 'tmp x)
+     to set a value such as:
+     	 (setf (gethash 'tmp x) 'tmp2)
+
+Returning Multiple Values:
+     use (round) to round off a number:
+     	 (round 2.4)
+	 -> 2;
+	    0.4
+     This function round 2.4 to 2, but also return the remainder of the rounding operation.
+
+     Create muultiple values by using (value) function such as:
+     	    (defun foo () (values 3 7))
+	    (foo)
+	    -> 3;
+	       7
+     Lisp considers the first value to be more important, and it will always be used by default during follow-up calculations. such as:
+     (+ (foo) 5)
+     -> 8
+
+     if you need to use additional returned value. using multiple-value-bind
+     (multiple-value-bind  (a b) (foo) (* a b))
+	     
+     But in this book, it will not be making much use of multiple values.
+
+Hash Table Performance:
+     You can't always expect hash tables to provide the best performance
+     1. Virtual memory paging and cache misses
+     2. Hash collisions
+     3. Inefficiency with small tables
+     	The performance benefits of hash tables are noticeably only when they contain larger amounts of dada in them.
+     4. Varying speed for operations
+     	It's O(1) in average.
+
+A faster Grand theft wumpus using hash tables
+  (time XXX)
+  it will show the information which contains real time, run time space, GC and GC time
+
+  (dotimes (var times) (use-var-to-do XXXX))
+
+
+Common Lisp Structures
+  Working with Structures
+    (defstruct person
+    	       name
+	       age
+	       waist-size
+	       favorite-color)
+    a person has four proerties (also called slots by Lispers)
+    then you can using (make-person) function
+      (defparameter *bob* (make-person :name "Bob"
+      		    	  	       :age 35
+				       :waist-size 32
+				       favorite-color "blue"))
+    And you also can
+      (defparameter *bob* #S(person :name "bob" :age 35 :waist-size 32 :favorite-color "blue"))
+
+    And you can get the attibutes by (person-xxx) such as:
+    	(person-age *bob*)
+	(setf (person-age *bob*) 20)
+
+    OOP(Oriented-Object-Programming)
+
+
+  
+Handling Data in a Generic Way
+  defmethod
+
+  (length)
+  you can use length function to check for the length of all three sequence types
+  (length '(a b c)) (length "ASC") (length (make-array 3))
+
+  And there is a specific function called list-length, it used to check the length of list. It performance better.
+
+  Sequence Functions for searching
+    (find-if #'numberp '(a b 5 p)) -> 5
+    (count #\s "mississippi") -> 4
+    (position #\4 "2kew4asdasd") -> 4
+    (some #'numberp '(a b 2 d)) -> t
+    (every #'numberp '(a b c d)) -> nil
+
+Sequence Functions for iterating across a sequence
+  
+(reduce #'+ '(3 4 6 7 2))->20
+      3
+    3  4
+     +
+     7    6
+       +
+       13  7
+         +
+	 20  2
+	   +
+	   22
+
+(reduce (lambda (best item)
+	  (if (and evenp item) (> item best)
+	      item
+	      best))
+	'(7 4 6 5 2)
+	:initial-value 0)
+6
+
+Another function  that is useful for iterating across a sequence is the map function.
+	(map 'list (lambda (x) (if (eq x #\s) #\S x)) "this is a string")
+->	(#\t #\h #\i #\S #\Space #\i #\S #\Space #\a #\Space #\S #\t #\r #\i #\n #\g)
+
+Two more important sequence functions
+(subseq "america" 2 6)
+-> "eric"
+
+(sort '(4 3 2 1) #'<)
+(sort '(1 2 3 4 5 6 7) (lambda (x y) (if (xor (oddp x) (oddp y)) (oddp x) (< x y))))
+
+Creating Your own Generic Functions with type Predicates
+(defmethod add ((a number) (b number))
+(+a b))
+(defmethod add ((a list) (b list))
+(append a b))
+
+OOP
+
+
+	
+	     
