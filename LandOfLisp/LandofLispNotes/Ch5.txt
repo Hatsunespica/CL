@@ -1,0 +1,116 @@
+The basic requirements of the game:
+	1. looking around
+	2. walking to different locations
+	3. picking up objects
+	4. performing actions on the objects picked up
+
+Describing the Scenery with an association list
+	(defparameter *nodes* '((living-room (*****some describe****))
+						(garden (*********))
+						(arric (****))))
+
+	this *nodes* variable basically gives us a way to find a piece of data associated with a lookup key.
+	This type of structure is called associattion list, or alist for short.
+	we use tge assoc function to find the correct item in the list using a key:
+	(assoc 'graden *nodes*)
+
+	so
+		(defun describe-location (location nodes)
+  		  (cadr (assoc location nodes)))
+ 	this function is written in the functional programming style.IN this style, a function will reference only parameters or variables declared in the function itself, and it will do nothing besides return a value.
+
+ 	By writing functions that dno't reference variables in the "outside world" directly and that don't perform any acions other than returning a value, you can write code that can easly be tested in isolation. You should try to write your Lisp functions in this style whenever possible.
+
+Describing the paths
+	(defparameter *edges* '((libing-room (garden west door) (attic upstairs ladder))
+							(garden (livign-room east door))
+							(attic (living0room downstairs ladder))))
+
+	the structure of *edge* is (now-locations (destination direction way))
+	
+	(defun describe-path (edge) `(there is a ,(caddr edge) going , (	cadr edge) from here.)
+	This function basically returns a piece of adata with small bits of calculated information inserted into it. This feature of Lisp, called quasiquoting, allows us to create chunks of data that have small pieces of Lisp code embedded in them.
+
+	Both the single quote and backquote in Lisp "flip" a piece of code into data mode, but only a backquote can also be unquoted using the comma character, to flip back into code mode.
+
+	`(there is a ,(caddr edge) going ,(cadr edge) from there.)
+	^            ^                   ^
+	|            |                   |
+	flip         flop                flop
+
+	(defun describe-paths (locations edges)
+	  apply #'append (mapcar #'describe-path (cdr (assoc location edges))))
+
+	The mapcar function takes another function and a list, and then applies this function to every member of a list.
+	Functions that take other functions as parameters, such as mapcar, are very useful and a distinguishing feature in Lisp. Such functions are called higher-order functions.
+
+	The symbol sequence #' is a shorthand for the function operator
+	(mapcar #'car '((foo bar) (baz qux)))
+	(mapcar (function car) '((foo bar) (baz qux)))
+
+	CL requires you to use the funciton operator when referring to a function as a balue directly like this, because the name of a function may conflict with othere named items in a program.
+	(let ((car "Honda Civic"))
+	  (mapcar #'car '((foo bar) (baz qux))))
+
+	CL tracks function names differently from variable names. It has multiple namespaces, includoing one for variables and one for cuntions.
+
+	In other words, Scheme version has only one namespce for both functions and variables. As a result of this design, in Scheme, a variable and a separate fuction can't be available in the same block of code. That design decision is one of the great benefits (or curses) of Scheme, depending on your point of biew. Because of this difference in the number of namespaces, Scheme is sometimes called a Lisp-1, whereas CL is sometimes referred to Lisp-2.
+
+
+Joinging the Descriptions
+	the append function which joins several lists into one big list
+	(append '(1 2) '(3 4) '(5 6) '(7 8))
+	-> (1 2 3 4 5 6 7 8)
+	
+	And you can use apply function:
+	(apply #'append '((1 2) (3 4)))
+	->(1 2 3 4)
+
+	Since the apply function passes each item in a list as an argument to hte target function, you can run into problems when calling it on very large lists that have thousands of items or more. You can check the value of the  "call-arguments-limit" variable in the REPL to see the maximum number of allowed arguments to a function.
+
+	(defun describe-paths (locations edges)
+	  (apply #'append (mapcar #'describe-path (cdr (assoc location edges)))))
+
+	THe programming style used by describe-path is very typical for Lisp code.
+	It involves passing along a complicated chunk of data and manipulating it in several steps, often using higher-order functions.
+
+
+Describing Objects at a specific location
+  (defparameter *objects* '(obj1 obj2 ...))
+  (defparameter *oobject-locations* '((obj1 obj1-loc) (obj2 obj2-loc) ...))
+
+  (defun objects-at (loc objs obj-locs)
+    (labels ((at-loc-p (obj)
+        (eq (cadr (assoc obj obj-locs)) loc)))
+       (remove-if-not #'at-loc-o objs)))
+  
+  The at-loc-p function takes the symbol for an objecct and returns t or nil depending on whether that object exists at the location loc.
+  it's a CL convention to append a p to the end of that function's name. Such ture/false functions are called predicates, whihc is why use letter p.
+
+
+Describing Bisible objects
+  (defun describe-objects (loc objs obj-oc)
+    (labels ((describe-pbj (obj) `(you see a ,obj on the floor.)))
+    (apply #'append (maocar #'describe-obj (objects-at kic loc objs obj-loc))))
+
+    functions in the functional programming style reference only parameters or variables declared in the function itself.
+    The earlier functions we created, such as describe-locations, describe-paths and describe-objects, always return the same thing, no matter when they are called, as long as their parmeters are kept the same.
+  
+  keyword parameter.
+  In CL, many functions have built0in features that can be accessed by passing in special parameters at the end of the funciton call.
+  (find 'y '((5 x) (6 y) (7 z)) :key #'cadr)
+  -> (3 y)
+  A keyword parameter has two parts:
+  the first is the name(in this case :key), whihc begins with a colon.(We'll discuss the meaning of this colon in more detail in CH7)
+  The second is the value, whihc in this case is #'cadr
+
+  you can use Lisp macros to create a command in a vanilla Lisp REPL that doesn't require the quote in front of the directions, so theat you could just write (walk west)
+
+Picking up objects
+  the push function
+  (push '1 '(1 2))->(1 1 2)
+  (push a b) <-> (setf b (cons a b))
+  the assoc command, which we use to find objects in a given locations, always returns the first item it finds in a list.
+
+
+	

@@ -1,0 +1,82 @@
+Having a simple syntax is a defining feature of Lisp language
+
+Lisp only has one way of organizing bits of code: It uses parentheses to organize the code into lists
+All basic Lisp code uses this simple list-like syntax
+ (Bla bla bla bla bla)
+
+ we also can put symbols, numbers and strings into lists besides other lists.
+
+ Symbols:
+ 	CL symbols are typically made up of letters, numbers and characters like + - / & =< > ? ! _
+ 	some valid example: foo, ice9 my-killer-app27 and --<<==>>--
+ 	symbols in CL are case-insensitive(although most Lispers avoid using uppercase).
+
+ Numbers:
+ 	Lisp supports both floating-point numbers and integers
+ 	build-in long integers (expt 53 53)
+ 	the division function return a rational number when send two integers into the function (/ 4 6) -> 2/3
+
+ Strings:
+ 	Tp indicate a string in Lisp, surround characters with double quotes. For example "Tutti Frutti"
+ 	A string can also contain so-called escaped characters.
+ 	(princ "aaa \" aaa\"  ")
+
+CLuses two modes when it reads your code: a code mode and a data mode
+
+  code mode:
+ 	Lisp always assumes that you're writing code and defaults to code mode.
+ 	Lisp will expect Lisp code to be entered as a list. However, the code should be in a special type of list: a form. The commands you entering into REP: need to be structured as forms:
+ 	(command bla bla bla bla)
+ 	A form is simply a list with a special command at the beginning -- typically the name of a function
+ 	When Lisp reads the text for parameters of such a command, it usually assumes that these parameters are also in code mode.
+
+  data mode:
+  	Any stuff written in data mode is treated as data. This means the computer will try to excute it, which allows us to have info in our code that's just plain old data.
+  	'(expt 2 3)
+  	We put a single quote in front of the list.
+  	Placing a quote in front of lists so that they won't be evaluated as a command is called quoting.
+
+List in Lisp
+	Lists are crucial feature in Lisp. They are what hold all your Lisp code (as well as data)
+	lists in Lisp are held together by structures called cons cells.
+
+	cons cells:
+		It's made of two little connected boxes, both of which can point at other things.
+		In fact, lists in Lisp are just an abstract illusio -- all of them are actually cpm[psed of cons cells.
+		The list in computer represented by the link list, each node has two pointer, one for next node, and one for pointing to the data with the final node points to nil.
+
+
+List functions
+cons, car and cdr
+	cons:
+		When you call cons, the Lisp compiler typically allocates a small chunk of memory, the cons cell, that can hold two references to the objets being linked.(Usuallly, the second of the two items being linked will be a list.)
+		(cons 'a 'a) -> (a . a)
+		(cons '(a) 'a) -> ((a) . a)
+		(cons '(a a) 'a) -> ((a a) . a)
+		(cons 'a nil) -> (a)
+		nil is a special stmbol that is used to terminate a list in Lisp
+		(cons 'a ()) -> (a)
+		the empty list, (), can be used interchangeably with the nil symbol in CL.
+
+		(cons 'a (cons 'b (cons 'c ()))) -> (a b c)
+		In Lisp, a chain of cons cells and a list are exactly the same thing.
+
+	The car and cdr function:
+		The car function is used for getting the thing out the first slot of a cell.
+		The cdt function is used to grab the value out of the second slot, or the remainder of a list.
+		(car '(a b)) -> a
+		(cdr '(a b)) -> (b)
+
+	The list function
+		It does the dirty word of creating all the cons cells and builds our list all at once
+		(list 'a 'b 'c) -> (a b c)
+
+		Three follows are the same thing
+			(cons 'a (cons 'b (cons 'c ())))
+			(list 'a 'b 'c)
+			'(a b c)
+
+	Nested list
+		You can use any function with the name c*r right out of hte box, up to four levels deep.
+		(cadadr ...list...) -> (car (cdr (car (cdr ...list))))
+		evaluate from rear to front

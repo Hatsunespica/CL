@@ -1,0 +1,77 @@
+Exotic lists
+	(cons 1 (cons 2 (cons 3 nil))) => (1 2 3)
+	Lisp uses the simpler list tyntas when it parrots our chain back to us in the REPL. It shows our string of cons cell as a list of three  items. The important point to remember is that this difference in appearance is entirely siperficial. No matter how a Lisp list is displayed, funcamentally, it always remains a chain of cons cells.
+
+
+Dotted Lists
+	A list in Lisp that ends in something other than a nil is referred to as a dotted list.
+	you can use this to store a pair such as (2 . 3)
+
+Circular Lists:
+	(setf *print-circle* t)
+	Setting *print-circle* to true warns Lisp taht you plan on playing shenanigans with self-referential data  structures.
+	If you were to print a circular list without this variale set, there's no telling what woul happen.
+
+Association Lists
+	An alist consists of key/value pairs stored in a list.
+	to look up a given value, use the function assoc(assoc return the first satisfied value)
+	alists are a great way to keep tracck of any changeable collection of key/value pairs
+	it remains there forever, making it easy to audit the history of any data.
+	And they are not a very effiient way to store and retrieve data.
+
+
+Visualizing Graphs
+	(I will ignore something I known)
+	Since perfect graph layouts are still an unsolved oriblem in computer science.
+
+Converting Node Identifiers
+	substitute-if function substitutes values based on the result of a test function
+	(For the sake of simplicity, out dot-name function assumes that no node identifiers differ only in their nonalphanumeric components. For instance, if we had one node called foo? and another called foo*, it both become foo_)
+
+	digit-char-p tell us if a character in a string is anumerical digit.
+	Test function like this, which accept a value and determine truth based on that value, are often referred to as predicates.
+	The substitute-if function is one example of a generic function -- a function that accept multiple datatype as parameters and handle them appropriately.
+	Lisp already has a predicate function that tell us if a character is alphanumeric, called alphanumericp.
+	We can create this opposite (or complement) function to alphanumericp bby passing it to a higher-oreder function named complement.
+
+
+Adding Labels to Graph Nodes
+	write-to-string function is similar to the prin1-to-string function, it writes an expression to a string.
+	:pretty parameter is an example of a keyword parameter.
+	In the case of write-to-string, it tells Lisp not to alter the string to make it pretty. Without this, Lisp would place new lines of tabs into our converted string to make it look more pleasing to the eye.
+
+Generating the DOT Information for the nodes.
+	mapc is a slightly more effcient variant of mapcar; the difference is that it does not return the transformed list.
+	Notice that we are not interested in the value returned from the nodes=>dot function -- only in the information it prints in the REPL. Lispers would say that we are only interested in the side effects of this function.
+
+Turning the DOT file into a Picture
+	Fire, to keep this dot->png function as reusable as possible, the graph->dot function isn't called directly. Insraed, we write dot->png to accept a thunk
+
+	It is common in Lisp to create small functions that have zero arguments. These functions are officially called nullary functions. However, Lispers will often such functions in order to describe a computation that they don't want to run until later.In this scenario, a function without arguments is commonly called a thunk or a suspension.
+
+	Why is a thunk useful in our dot->png function? Remember taht the easiest way for us to write and debug grapg->dot and other DOT file functions is to have them print their results directlt to console. WHen we call grph->dot, it doesn't return its retults as a value, but, instead, prints them as the console as a side effect. Therefore, we can't just pass tthe value of graph->dot is resposible for calling graph=>dot, apturing the results, and sending them to a file.
+
+	Since it is so common to generate textual data with a computer program, this particular technique is used a lot in Lisp code: First we print stuff right to the console; next we wrap it in a thunk; finally, we redirect the results to some other location.
+
+Creating a stream
+	the first item passed into with-open-file becomes the name of a special CL datatype called a stream, whihc is created for us by with-open-file
+	In this case, these printing functions won't prnt anything to the console, but instead will print to the stream object.
+	It is important to understand that with-open-file creates a stream variable from a stream variable name, in the same way that the let function creates a variable fomr a variable name
+
+
+Understanding Keyword Parameters
+	A keyword parameter has two parts: the name of the parameter and the value of the parameter. The name of the parameter is always a symbol begining with a colon. This example has two keyword parameter : direction, which is set to :output(we're only writing to the file and not reading it), and :if-exists, which is set to :supersede(if a file by that name exists, just toss out the old version)
+
+	Sometimes we don't want a symbol to refer to something else. We want to use the symbol outright, and we want it to have its own meaning. A colon-prepended symbol in CL(not surprisingly, called a keyword symbol) always means itself.
+
+Capturing the Console Output
+	Remember that the let commnad usually cretes a lexical, or local, variable,. As we've discussed, the stream variable creted by with-open-file is analogous to using let to create a variable.
+
+	However, if a dynamic variable already exosts with the same name, let will instead, temporarily, override the value of the dynamic variable to the new value. *standard-output* is such a dyamic variable. This means taht we can temporarily override the value of *standard-output* to a new value by passing it into our with-open-file command.
+
+Creating a Picture of our graph
+	It calls dot->png and cretes the approriate thunk -- a lambda function. As is usual for a thunk, it takes no parameters.
+	The graph->dot function is called inside the thunk as a delayed computation.
+
+Creating Undirected Graphs
+	The maplist functio like mapcar function, except that the function inside it receives the entire remainder of the list, not just the current item in the list.

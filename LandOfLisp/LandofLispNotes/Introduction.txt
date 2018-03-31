@@ -1,0 +1,50 @@
+Introduction:
+	Lisp is a very expressive language.
+	According to the author, lisp is such a powerful idea that it will crowd out your previous programming experience and become your mnre mothher tongue.
+
+	In fact, I learn lisp is just for fun, so it's no meaning for me to think about if it has a promising future.
+
+History of Lisp:
+	pure machine languages (1940s)
+		were tightly bound to specific computer systems such as the ENIAC, the Zuse Z3
+
+	Assembly languages
+		it made software development much more efficient
+		the significant limitations is that they were always designed around the instruction set of a specific processor and so they were not portable across different machine architecutres.
+		included Short Code, ARC assembly, and EDSAC Initial Orders.
+
+	The first machine-independent programming languages (1950s)
+		Languages like Autocode and Information Processing Language accomplished this independence through new types of software, such as compilers and interpreters.
+
+		Because of compilers and interpreters, computer programs could now be written in a human-friendly syntax.{
+			A compilter can take a human-written computer program and convert it automatically into a machine-friendly binary format tha the computer can execute.
+			An interpreter performs the actions described in a humna-written program directly, without convertting them all the way down to a binary format.
+		}
+
+		FORTRAN (developed in 1957) was wodely supported on different architectures and is still usde heavily to this day.
+
+	Early Lisp appeared
+
+		Up until this point, the most successful languages had been designed around one central idea: to offer a general design and syntax that would make programming as easy as possible for novices.
+
+		Some other languages use mathematical syntax, such as the lambda calculus, developed by mathematicians in the 1930s
+		These languages were highly itelligent and wanted to pish the limits of language design. They poesed questions about program notations, language semantics, and the simplest possible language syntax.
+	
+		They contain the original Lisp [rpgramming language and it didn't evolve from FORTRAN or other language that were concerned with pragmatism or ease of use. Its lineage is a completely separate one, drawn straight from mathematics.
+		The most probably correct creation of Lisp was the work of John MnCafthy in 1959.
+
+		Soon after the first Lisps appeared, the first Lisp programmers appeared, capturing these docile creatures and transforming them into ever-more-refined programming languages. Over time, these programmers turned the primal Lisps into dialects such as MACLISP and Interlisp.
+
+	Golden Age
+		While Lisp was an incredibly powerful idea, other programming languages already had a head start in mind share and more matuerr development tools. This made it a challenge for Lisps.
+		At that time, Lispers benefited heavily from highly academic research in areas such as image recognition, computerized data classification, and other problems that fall under the general umbrelle of artificial intelligence.
+		The highly mathematical nature of thes problems lent their investigation to a Lispy approach, and Lisp programmers built new dialects of Lisp into ever-more-advanced computer systems.
+
+	Winter
+		In the mid-1980s
+		Disappointments in the progess of AI research caused many grants for academic research to dry up, and much of the hardware favored by the Lispers (such as Lisp machines from Symbolics, Lisp Machine, Inc., and Texas Instruments) fell behind the capabilities of more traditional complex instructions set computer(CISC) and reduced instruction set computer(RISC) hardware architectures.
+
+		by the way, GC and parametric polymorphism, originally found in the Lisps, became common in the languages used by mainstream programmers.
+
+
+
