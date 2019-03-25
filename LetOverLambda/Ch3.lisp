@@ -1,3 +1,4 @@
+(load "Ch1.lisp")
 ;; The construction of a macro is an iterative process: all complex macros come from simpler ones.
 
 ;; sleep : nat -> void, receives a non-negative, non-cimplex, numeric argument, and pause execution of the process for n seconds.
@@ -52,10 +53,68 @@
 ;; Another solution is generated symbols. Lisp generates a name that would never has the same.
 ;; CL separates the variable namespace from the function namespace and eliminates an entire dimension of unwanted variable capture problems.
 
-(defmacro nif (expr pos zero neg)
+#|(defmacro nif (expr pos zero neg)
   (let ((g (gensym)))
     `(let ((,g ,expr))
        (cond ((plusp ,g) ,pos)
 	     ((zerop ,g) ,zero)
-	     (t ,neg)))))
+	     (t ,neg)))))|#
 
+(defun g!-symbol-p (s)
+  (and (symbolp s)
+       (> (length (symbol-name s)) 2)
+       (string= (symbol-name s)
+		"G!"
+		:start1 0
+		:end1 2)))
+
+(defmacro defmacro/g! (name args &rest body)
+  (let ((syms (remove-duplicates
+	       (remove-if-not #'g!-symbol-p
+			      (flatten body)))))
+    `(defmacro ,name ,args
+       (let ,(mapcar
+	      (lambda (s)
+		`(,s (gensym ,(subseq (symbol-name s) 2))))
+	      syms)
+	 ,@body))))
+
+(defmacro/g! nif (expr pos zero neg)
+  `(let ((,g!result ,expr))
+     (cond ((plusp ,g!result) ,pos)
+	   ((zerop ,g!result) ,zero)
+	   (t ,neg))))
+
+;; An interesting corner-case
+(defmacro/g! junk-outer ()
+  `(defmacro/g! junk-inner ()
+     `(let ((,g!abc))
+	,g!abc)))
+
+;; The use of g!anc are preceded by only one unquote so we know taht the expansion refers to the inner gensym created by the expansion of junk-inner.
+
+;;Exercise Answer: the first is bounded in junk-inner whereas the second is in junk-outer.
+
+;;The idea behind once-only is to surround a macro expandsion with code that will create a new binding. When the macro expansion is evaluated, this binding  will be initialised with the result of evaluating one of the forms passed to the macro as an argument. The code in the body of once-only can then use the binding which, of course, does not re-evaluate the form that was passed to the macro.The form passed as an argument to the macro is only and always evaluated once. Once-only.
+
+(defun o!-symbol-p (s)
+  (and (symbolp s)
+       (> (length (symbol-name s)) 2)
+       (string= (symbol-name s)
+		"O!"
+		:start1 0
+		:end1 2)))
+
+(defun o!-symbol-to-g!-symbol (s)
+  (symb "G!"
+	(subseq (symbol-name s) 2)))
+
+(defmacro defmacro! (name args &rest body)
+  (let* ((os (remove-if-not #'o!-symbol-p args))
+	 (gs (mapcar #'o!-symbol-to-g!-symbol os)))
+    `(defmacro/g! ,name ,args
+       `(let ,(mapcar #'list (list ,@gs) (list ,@os))
+	  ,(progn ,@body)))))
+
+;; Duality of Syntax
+;;lexical and dynamic variables are acutally completely different. This dual syntax allows us to write a macro that has a single, common interface for creating expansions that are useful in both dynamic and lexical contexts. Even though the meanings of expansions of the macro can be compeletely different given their context, and even though each can mean entirely different things underneath, we can still use the same macro and the same combinations of this macro with other macros. In other words, macros can be made ambivalent about not only the contents of their macro arguments, but also about the different meanings of their expansions. We can use the macro just for its undersood code transformtion, ignoring the semantics meanings of the code, all because the code only has meaning once we use it somewhere -- it has no meaning during macro processing.
