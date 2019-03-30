@@ -110,7 +110,7 @@
 	(subseq (symbol-name s) 2)))
 
 (defmacro defmacro! (name args &rest body)
-  (let* ((os (remove-if-not #'o!-symbol-p args))
+  (let* ( (os (remove-if-not #'o!-symbol-p args))
 	 (gs (mapcar #'o!-symbol-to-g!-symbol os)))
     `(defmacro/g! ,name ,args
        `(let ,(mapcar #'list (list ,@gs) (list ,@os))
@@ -118,3 +118,13 @@
 
 ;; Duality of Syntax
 ;;lexical and dynamic variables are acutally completely different. This dual syntax allows us to write a macro that has a single, common interface for creating expansions that are useful in both dynamic and lexical contexts. Even though the meanings of expansions of the macro can be compeletely different given their context, and even though each can mean entirely different things underneath, we can still use the same macro and the same combinations of this macro with other macros. In other words, macros can be made ambivalent about not only the contents of their macro arguments, but also about the different meanings of their expansions. We can use the macro just for its undersood code transformtion, ignoring the semantics meanings of the code, all because the code only has meaning once we use it somewhere -- it has no meaning during macro processing.
+(defmacro! square (o!x)
+  `(progn
+     (format t "[~a gave ~a]~%"
+	     ',o!x ,g!x)
+     (* ,g!x ,g!x)))
+
+(defparameter tmp '(defmacro! square (o!x) `(progn (format t "[~a gave ~a]~%" ',o!x ,g!x)  (* ,g!x ,g!x))))
+
+
+  
