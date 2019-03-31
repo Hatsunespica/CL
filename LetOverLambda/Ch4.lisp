@@ -179,4 +179,48 @@ Two approaches to combating impedance mismatches: style and understanding
 If you just always follow the assumption that lisp does something right, you will hardly ever go wrong. In fact, lisp does this even more right than you might expect.
 As in all areas of computer security, you can't consider defence until you have consider defence until you have considered offence. In all other areas of programming, you can arrive at good results constructively, whereas, in security, you must think destructively.
 There is no way to attack a program unless you control input to that program in some way.
+
+Lisp will normally throw an error because we tried to read in an unbalanced form or lookup a symbol in a package that doesn't exists. Likely our entire application will grind to a hold. This is known as a denial of service attack.
 |#
+
+
+#|
+This safe-read-from-string has had most of the interestign read macros removed, including #. That means that vectors, bit-vectors, gensyms, circular references, #., and all the rest are out. It will not even allow keywords or foreign package symbols.
+: for keyword symbols
+# for read-eval
+
+|#
+
+(defvar safe-read-from-string-blacklist '(#\# #\: #\|))
+
+(let ((rt (copy-readtable nil)))
+  (defun safe-reader-error (stream closech)
+    (declare (ignore stream closech))
+    (error "safe-read-from-string failure"))
+  
+  (dolist (c safe-read-from-string-blacklist)
+    (set-macro-character
+     c #'safe-reader-error nil rt))
+
+  (defun safe-read-from-string (s &optional fail)
+    (if (stringp s)
+	(let ((*readtable* rt) *read-eval*)
+	  (handler-bind
+	      ((error (lambda (condition)
+			(declare (ignore condition))
+			(return-from
+			 safe-read-from-string fail))))
+	    (read-from-string s)))
+	fail)))
+
+#|
+how to use above code
+(let* ((g (gensym))
+       (v (safe-read-from-string
+	   user-supplied-string g)))
+  (if (eq g v)
+      (log-bad-data ; careful how it's logged!
+       user-supplied-string)
+      (pross v)))
+|#
+
